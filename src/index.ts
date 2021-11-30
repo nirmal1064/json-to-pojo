@@ -1,9 +1,9 @@
-const input = require("./input.json");
-const fs = require("fs");
+import input from "./input.json";
+import fs from "fs";
 
-const classes = [];
+const classes: string[] = [];
 
-const validateJson = (jsonString) => {
+const validateJson = (jsonString: string): JSON | null => {
   try {
     return JSON.parse(jsonString);
   } catch (error) {
@@ -11,19 +11,19 @@ const validateJson = (jsonString) => {
   }
 };
 
-const capitalizeFirst = (inputString) => {
+const capitalizeFirst = (inputString: string): string => {
   return inputString.charAt(0).toUpperCase() + inputString.slice(1);
 };
 
-const lowerCaseFirst = (inputString) => {
+const lowerCaseFirst = (inputString: string): string => {
   return inputString.charAt(0).toLowerCase() + inputString.slice(1);
 };
 
-const getArrayDepth = (value) => {
+const getArrayDepth = (value: Array<any>): number => {
   return Array.isArray(value) ? 1 + Math.max(...value.map(getArrayDepth)) : 0;
 };
 
-const getInnermostArray = (value) => {
+const getInnermostArray = (value: Array<any>): Array<any> => {
   let depth = getArrayDepth(value);
   let innermostArray = value;
   while (depth > 1) {
@@ -33,7 +33,7 @@ const getInnermostArray = (value) => {
   return innermostArray;
 };
 
-const getArrayType = (value) => {
+const getArrayType = (value: Array<any>): string => {
   let innermostArray = getInnermostArray(value);
   let type = "Double";
   if (innermostArray.every((element) => element === parseInt(element))) {
@@ -42,11 +42,11 @@ const getArrayType = (value) => {
   return type;
 };
 
-const isSnakeCase = (inputString) => {
+const isSnakeCase = (inputString: string): boolean => {
   return inputString.indexOf("_") !== -1;
 };
 
-const convertToCamelCase = (inputString) => {
+const convertToCamelCase = (inputString: string): string => {
   const inputArray = inputString.split("_");
   let outputString = "";
   inputArray.forEach((element, index) => {
@@ -59,7 +59,7 @@ const convertToCamelCase = (inputString) => {
   return outputString;
 };
 
-const getList = (depth, type) => {
+const getList = (depth: number, type: string): string => {
   let list = "private ";
   let closeBracket = "";
   for (let i = 0; i < depth; i++) {
@@ -73,7 +73,7 @@ const getList = (depth, type) => {
   return list;
 };
 
-const generatePojo = (json) => {
+const generatePojo = (json: any) => {
   let javaPojo = "";
   const jsonKeys = Object.keys(json);
   for (let i = 0; i < jsonKeys.length; i++) {
@@ -126,13 +126,13 @@ const generatePojo = (json) => {
 };
 
 // generate java class from input json
-const generateClass = (className, json) => {
+const generateClass = (className: string, json: any): void => {
   const javaPojo = generatePojo(json);
   const javaClass = `public class ${className} {\n\n${javaPojo}}`;
   classes.push(javaClass);
 };
 
-const generateJavaPojo = (className, jsonInput) => {
+const generateJavaPojo = (className: string, jsonInput: string): void => {
   let json = validateJson(jsonInput);
   if (json === null) {
     console.log("Invalid Json");
@@ -143,6 +143,8 @@ const generateJavaPojo = (className, jsonInput) => {
 
 const jsonString = JSON.stringify(input);
 generateJavaPojo("MatchJson", jsonString);
+generateClass("MatchJson", input);
+
 let output = "";
 classes.forEach((element) => {
   output += `${element}\n\n`;
