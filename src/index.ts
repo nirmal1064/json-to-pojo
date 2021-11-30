@@ -3,9 +3,9 @@ import fs from "fs";
 
 const classes: string[] = [];
 
-const validateJson = (jsonString: string): JSON | null => {
+const validateJson = (jsonStr: string): JSON | null => {
   try {
-    return JSON.parse(jsonString);
+    return JSON.parse(jsonStr);
   } catch (error) {
     return null;
   }
@@ -76,8 +76,7 @@ const getList = (depth: number, type: string): string => {
 const generatePojo = (json: any) => {
   let javaPojo = "";
   const jsonKeys = Object.keys(json);
-  for (let i = 0; i < jsonKeys.length; i++) {
-    let key = jsonKeys[i];
+  for (let key of jsonKeys) {
     let value = json[key];
     if (isSnakeCase(key)) {
       javaPojo += `@SerializedName("${key}")\n`;

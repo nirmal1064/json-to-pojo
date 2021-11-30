@@ -1,8 +1,8 @@
 {
   "name": "json-to-pojo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "JSON to POJO",
+  "main": "src/index.ts",
   "scripts": {
     "watch-ts": "tsc -w",
     "dev": "ts-node-dev --respawn --pretty --transpile-only src/index.ts"
