@@ -1,4 +1,4 @@
-import input from "./input.json";
+import input from "./test.json";
 import fs from "fs";
 
 const classes: string[] = [];
@@ -73,6 +73,32 @@ const getList = (depth: number, type: string): string => {
   return list;
 };
 
+const handleObject = (key: string, value: any, javaPojo: string): string => {
+  key = capitalizeFirst(key);
+  if (Array.isArray(value)) {
+    const depth = getArrayDepth(value);
+    value = getInnermostArray(value);
+    if (value[0] !== null && typeof value[0] === "string") {
+      javaPojo += `${getList(depth, "String")} ${lowerCaseFirst(key)};\n\n`;
+    } else if (value[0] !== null && typeof value[0] === "number") {
+      javaPojo += `${getList(depth, getArrayType(value))} ${lowerCaseFirst(
+        key
+      )};\n\n`;
+    } else if (value[0] !== null && typeof value[0] === "boolean") {
+      javaPojo += `${getList(depth, "Boolean")} ${lowerCaseFirst(key)};\n\n`;
+    } else if (value[0] !== null && typeof value[0] === "object") {
+      javaPojo += `${getList(depth, key)} ${lowerCaseFirst(key)};\n\n`;
+      generateClass(key, value[0]);
+    } else {
+      javaPojo += `private List<Object> ${lowerCaseFirst(key)};\n\n`;
+    }
+  } else {
+    javaPojo += `private ${key} ${lowerCaseFirst(key)};\n\n`;
+    generateClass(key, value);
+  }
+  return javaPojo;
+};
+
 const generatePojo = (json: any) => {
   let javaPojo = "";
   const jsonKeys = Object.keys(json);
@@ -131,29 +157,3 @@ fs.writeFile(`MatchJson.java`, output, (err) => {
   if (err) throw err;
   console.log("Saved!");
 });
-
-const handleObject = (key: string, value: any, javaPojo: string): string => {
-  key = capitalizeFirst(key);
-  if (Array.isArray(value)) {
-    const depth = getArrayDepth(value);
-    value = getInnermostArray(value);
-    if (value[0] !== null && typeof value[0] === "string") {
-      javaPojo += `${getList(depth, "String")} ${lowerCaseFirst(key)};\n\n`;
-    } else if (value[0] !== null && typeof value[0] === "number") {
-      javaPojo += `${getList(depth, getArrayType(value))} ${lowerCaseFirst(
-        key
-      )};\n\n`;
-    } else if (value[0] !== null && typeof value[0] === "boolean") {
-      javaPojo += `${getList(depth, "Boolean")} ${lowerCaseFirst(key)};\n\n`;
-    } else if (value[0] !== null && typeof value[0] === "object") {
-      javaPojo += `${getList(depth, key)} ${lowerCaseFirst(key)};\n\n`;
-      generateClass(key, value[0]);
-    } else {
-      javaPojo += `private List<Object> ${lowerCaseFirst(key)};\n\n`;
-    }
-  } else {
-    javaPojo += `private ${key} ${lowerCaseFirst(key)};\n\n`;
-    generateClass(key, value);
-  }
-  return javaPojo;
-};
