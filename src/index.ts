@@ -76,7 +76,8 @@ const getList = (depth: number, type: string): string => {
 const generatePojo = (json: any) => {
   let javaPojo = "";
   const jsonKeys = Object.keys(json);
-  for (let key of jsonKeys) {
+  for (let k of jsonKeys) {
+    let key = k;
     let value = json[key];
     if (isSnakeCase(key)) {
       javaPojo += `@SerializedName("${key}")\n`;
