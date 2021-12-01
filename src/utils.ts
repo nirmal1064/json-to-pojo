@@ -71,8 +71,7 @@ export const getList = (depth: number, type: string): string => {
 };
 
 export const readJsonFromFile = (filePath: string): string => {
-  const json = readFileSync(filePath, "utf8");
-  return json;
+  return readFileSync(filePath, "utf8");
 };
 
 export const writeToJavaFile = (className: string, classes: string[]): void => {
